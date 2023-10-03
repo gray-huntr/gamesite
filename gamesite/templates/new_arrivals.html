@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../static/css/bootstrap.css">
+
+	<!-- we will need jquery file later -->
+	<script type="text/javascript" src="../static/js/jquery.js"></script>
+
+	<!-- below is a javascript file,,helps in interactivity -->
+	<script type="text/javascript" src="../static/js/bootstrap.js"></script>
+	<script src='https://kit.fontawesome.com/a076d05399.js'></script>
+</head>
+<body style="background-color:#000; ">
+    {% include 'navbar.html' %}
+<section class="row col-md-12">
+    <div class="col-md-8 row ">
+        <div class="col-md-6">
+            <h2 class="text-primary text-right"><b>COMING</b></h2>
+        </div>
+
+        <div>
+             <h2 class="text-danger"><b>SOON</b></h2>
+        </div>
+
+        <div class="col-md-6">
+          <hr class="bg-primary" width="100%">
+        </div>
+
+        <div class="col-md-6">
+            <hr class="bg-danger">
+        </div>
+
+        <section class="row" style="background-color:#000033">
+            <div class="col-md-12">
+               <h3 class="text-danger container text-center">{{msg}}</h3>
+            </div>
+
+            {% for row in rows %}
+            <div class="col-md-4">
+                <div class="card">
+        <!--			image-->
+                    <img src="{{row[2]}}" height="300" width="100%" alt="">
+                    <div class="card-body" style="background-color:#000033">
+        <!--				name of product-->
+                        <h3><b class="card-title text-white" >{{ row[1] }}</b></h3> <br>
+        <!--				cost-->
+                        <p class="text-white"> KSH: {{ row[3] }}</p><br>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+
+    </div>
+    <div class="col-md-4">
+        <div>
+            <h2 class="text-primary text-center"><b>ANNOUNCMENTS</b></h2> <br>
+        </div>
+        <section class="row">
+                <div class="col-md-12">
+                    <div id="demo" class="carousel slide" data-ride="carousel">
+                    <!-- Indicators -->
+                    <ul class="carousel-indicators">
+                        <li data-target="#demo" data-slide-to="0" ></li>
+                        <li data-target="#demo" data-slide-to="1" ></li>
+                        <li data-target="#demo" data-slide-to="2" ></li>
+                    </ul>
+
+                    <!-- The slideshow -->
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                        <img src="../static/images/announcment.jpg" alt="Los Angeles" width="100%" height="500">
+                        </div>
+                        <div class="carousel-caption">
+                            <h2 class="font-family-arial">TOURNAMENT CULTURE</h2>
+                        </div>
+
+                        <div class="carousel-item">
+                        <img src="../static/images/announcment1.jpg" alt="" width="100%" height="500">
+                        </div>
+                        <div class="carousel-item">
+                        <img src="../static/images/announcment2.jpg" alt="" width="100%" height="500">
+                        <div class="carousel-caption">
+                            <h2></h2>
+                        </div>
+                    </div>
+
+
+                    <!-- Left and right controls -->
+                    <a class="carousel-control-prev" href='#demo' data-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                    </a>
+                    <a class="carousel-control-next" href='#demo' data-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                    </a>
+
+                    </div>
+                </div>
+                </div>                
+        </section> <br>
+        <a href="/tournament_application" class="btn btn-danger">Apply for tournament</a>
+
+        
+
+    </div>
+
+</section>
+
+
+
+</body>
+</html>

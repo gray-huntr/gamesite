@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contacts</title>
+    <link rel="stylesheet" href="../static/css/bootstrap.css">
+
+	<!-- we will need jquery file later -->
+	<script type="text/javascript" src="../static/js/jquery.js"></script>
+
+	<!-- below is a javascript file,,helps in interactivity -->
+	<script type="text/javascript" src="../static/js/bootstrap.js"></script>
+	<script src='https://kit.fontawesome.com/a076d05399.js'></script>
+</head>
+<body style="background-color:#000;">
+{% include 'navbar.html' %}
+<hr class="bg-danger" width="75%">
+    <div class="row col-md-12">
+        <h1 class="text-danger col-md-6 text-right"><b>PAYBILL</b></h1>
+    </div>
+
+
+
+<section class="row">
+    <div class="col-md-6 text-white container">
+        <ol>
+            <li>Proceed to mpesa</li>
+            <li>Lipa na mpesa</li>
+            <li>Pay bill</li>
+            <li>Enter buisness number: 123456</li>
+            <li>Account number: Your Name</li>
+            <li>input amount:{{ session['all_total_price'] }}</li>
+            <li>Input pin and send</li>
+            <br>
+            <a href="/checkout" class="btn btn-outline-danger">I have paid</a><br><br>
+
+           
+        </ol>
+    </div>
+</section>
+<hr class="bg-primary" width="75%">
+
+{% include 'footer_cred.html' %}
+</body>
+</html>

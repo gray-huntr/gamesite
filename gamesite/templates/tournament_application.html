@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../static/css/bootstrap.css">
+
+	<!-- we will need jquery file later -->
+	<script type="text/javascript" src="../static/js/jquery.js"></script>
+
+	<!-- below is a javascript file,,helps in interactivity -->
+	<script type="text/javascript" src="../static/js/bootstrap.js"></script>
+	<script src='https://kit.fontawesome.com/a076d05399.js'></script>
+</head>
+<body style="background-color:#000; ">
+    {% include 'navbar.html' %}
+<section class="row col-md-12">
+    <div class="col-md-8">
+        <div class="row">
+            <div class="col-md-6">
+                <h2 class="text-primary text-right"><b>TOURNAMENT</b></h2>
+            </div>
+    
+            <div>
+                 <h2 class="text-danger"><b>LEADER BOARD</b></h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <hr class="bg-primary" width="100%">
+              </div>
+      
+              <div class="col-md-6">
+                  <hr class="bg-danger">
+              </div>
+        </div>      
+
+        <section class="row" style="background-color:#000033">
+            <div class="col-md-12">
+               <h3 class="text-danger container text-center">{{msg}}</h3>
+            </div>
+
+            <div class="col-md-4">
+                
+                <table class="table table-striped ml-4 ">
+                    <label class="text-info text-center pl-4"> MORTAL KOMBAT 11</label>
+                    <tr class="bg-dark text-white">
+                        
+                        <td>NAME</td>
+                        <TD>GAME</TD>
+                        <td>POINTS</td>
+                    </tr>
+                    {% for row in game1 %}
+        
+                    <tr class="text-white">
+                        <td>{{ row[1] }}</td>
+                        <td>{{ row[4] }}</td>
+                        <td>{{ row[5] }}</td>     
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div class="col-md-4">
+                
+                <table class="table table-striped ml-4 ">
+                    <label class="text-info text-center pl-4"> INJUSTICE 2</label>
+                    <tr class="bg-dark text-white">
+                        
+                        <td>NAME</td>
+                        <TD>GAME</TD>
+                        <td>POINTS</td>
+                    </tr>
+                    {% for row in game2 %}
+        
+                    <tr class="text-white">
+                        <td>{{ row[1] }}</td>
+                        <td>{{ row[4] }}</td>
+                        <td>{{ row[5] }}</td>     
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div class="col-md-4">
+                
+                <table class="table table-striped ml-4 ">
+                    <label class="text-info text-center pl-4"> FIFA 21</label>
+                    <tr class="bg-dark text-white">
+                        
+                        <td>NAME</td>
+                        <TD>GAME</TD>
+                        <td>POINTS</td>
+                    </tr>
+                    {% for row in game3 %}
+        
+                    <tr class="text-white">
+                        <td>{{ row[1] }}</td>
+                        <td>{{ row[4] }}</td>
+                        <td>{{ row[5] }}</td>     
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            
+        </section>
+
+    </div>
+    <div class="col-md-4">
+        <div>
+            <h2 class="text-primary text-center"><b>ANNOUNCMENTS</b></h2> <br>
+        </div>
+
+        <section class="row col-md-12">
+            <h2 class="text-primary text-center"><b>SIGN UP FOR TOURNAMENTS BELOW</b></h2>
+            <div class="col-md-6">
+                <table border="5" bordercolor="#ff0000" width=250>
+                    <td>
+                        <form action="/tournament_application" method="post">
+                            <label class="text-primary"><b>Full name:</b></label>
+                            <input type="text" name="full_name" placeholder="Full Name" required> <br><br>
+                            <label class="text-primary"><b>Phone number:</b></label>
+                            <input type="number" required name="phone_number" placeholder="Phone Number"> <br><br>
+                            <label class="text-primary"><b>Email address:</b></label>
+                            <input type="email" required name="email" placeholder="Email address"><br><br>
+                            <label class="text-primary"><b>Game of choice:</b></label>
+                                <select name="GOC" required>
+                                    <option></option>
+                                    {%for row in tournaments%}
+                                  <option >{{row [1]}}</option>
+                                  {%endfor%}
+                                  
+                                </select> <br>
+                                <input type="submit" class="btn btn-outline-danger">
+                        </form>
+                    </td>
+                </table>
+            </div>
+
+            <div class="col-md-6 pl-4 text-danger">
+                <h2 class="">RULES</h2>
+                <ol>
+                    <li>No single applicant will apply for more than one game</li>
+                    <li>Any irregulaties will result in the immediate termination of the player</li>
+                    <li>Winner shall be determined by highest point per game category</li>
+                </ol>
+            </div>
+            <br>
+        </section>
+        <section class="row">
+                <div class="col-md-12">
+                    <div id="demo" class="carousel slide" data-ride="carousel">
+                    <!-- Indicators -->
+                    <ul class="carousel-indicators">
+                        <li data-target="#demo" data-slide-to="0" ></li>
+                        <li data-target="#demo" data-slide-to="1" ></li>
+                        <li data-target="#demo" data-slide-to="2" ></li>
+                    </ul>
+
+                    <!-- The slideshow -->
+                    <div class="carousel-inner">
+                         <div class="carousel-item active">
+                        <img src="../static/images/announcment.jpg" alt="Los Angeles" width="100%" height="500">
+                        </div>
+                        <div class="carousel-caption">
+                            <h2 class="font-family-arial">TOURNAMENT CULTURE</h2>
+                        </div>
+
+                        <div class="carousel-item">
+                        <img src="../static/images/announcment1.jpg" alt="" width="100%" height="500">
+                        </div>
+                        <div class="carousel-item">
+                        <img src="../static/images/announcment2.jpg" alt="" width="100%" height="500">
+                        <div class="carousel-caption">
+                            <h2></h2>
+                        </div>
+                    </div>
+
+
+                    <!-- Left and right controls -->
+                    <a class="carousel-control-prev" href='#demo' data-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                    </a>
+                    <a class="carousel-control-next" href='#demo' data-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                    </a>
+
+                    </div>
+                </div>
+                </div>
+        </section>
+
+        
+
+    </div>
+
+</section>
+
+
+
+</body>
+</html>

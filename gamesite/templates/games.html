@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Games</title>
+    <link rel="stylesheet" href="../static/css/bootstrap.css">
+
+	<!-- we will need jquery file later -->
+	<script type="text/javascript" src="../static/js/jquery.js"></script>
+
+	<!-- below is a javascript file,,helps in interactivity -->
+	<!-- jQuery and JS bundle w/ Popper.js -  Interactivity-->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+	<script src='https://kit.fontawesome.com/a076d05399.js'></script>
+</head>
+<body style="background-color: #000;">
+    {% include 'navbar.html' %}
+	<section class="row">
+		<div class="col-md-10">
+			<H2 class="text-center text-danger"><b>GAMES</b></H2>
+			<hr class="bg-danger" width="75%">
+			<h3 class=" text-white text-center">Here are some of the games that we currently offer. Enjoy....</h3>
+		</div>
+
+		<div class="col-md-2">
+			<form action="/games_search" method="post">
+				<input type="text" name="games_search">
+				<input type="submit" value="search">
+			</form>
+		</div>
+
+	</section>
+
+
+
+
+<section class=" row" style="background-color: #000;">
+	{% for row in rows %}
+	<div class="col-md-4">
+		<div class="card">
+			<a href="/purchase_games/{{row[0]}}"><img src="{{row[3]}}" height="300" width="100%" alt=""></a>
+				<div class="card-body" style="background-color: #000;">
+				<h3><b class="card-title text-white" >{{ row[1]}}</b></h3> <br>
+				<b><p class="text-white"> KSH: {{ row[4] }}</p></b>
+				<p class="text-white">{{ row[2] }}</p><br>
+				<a href="/purchase_games/{{row[0]}}" class="btn btn-outline-danger">ORDER</a>
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+
+
+</section>
+
+<!--<section class="row" style="background-color:#000033">-->
+<!--	<div class="col-md-4">-->
+<!--		<div class="card">-->
+<!--			<img src="../static/images/game11.jpg" height="300" alt="">-->
+<!--			<div class="card-body" style="background-color:#000033">-->
+<!--				<h3 class="card-title text-white">The last of us</h3>-->
+<!--                <p class="text-white card-text">Prize: 800</p>-->
+<!--				<p class="text-white card-text">Requirements:</p>-->
+<!--				<p class="text-white card-text">OS: windows7-64Bit or later</p>-->
+<!--				<p class="text-white card-text">processor:Quad-core Intel Core i5 or i7 processor</p>-->
+<!--				<p class="text-white card-text">Memory: 4GB RAM</p>-->
+<!--				<p class="text-white card-text">Graphics:  Nvidia 500 / Nvidia 600/ AMD 6000 series</p>-->
+<!--				<p class="text-white card-text">Hard drive: 14 GB space<p>-->
+
+<!--			</div>-->
+
+<!--		</div>-->
+
+<!--	</div>-->
+
+<!--	<div class="col-md-4">-->
+<!--		<div class="card">-->
+<!--			<img src="../static/images/game1.jpg" height="300" alt="">-->
+<!--			<div class="card-body" style="background-color:#000033">-->
+<!--				<h3 class="card-title text-white">Call of duty: black ops</h3>-->
+<!--                <p class="card-text text-white">Prize: 550</p>-->
+<!--				<p class="text-white card-text">Requirements:</p>-->
+<!--				<p class="text-white card-text">OS: windows7-64Bit or later</p>-->
+<!--				<p class="text-white card-text">processor:Quad-core Intel Core i5 or i7 processor</p>-->
+<!--				<p class="text-white card-text">Memory: 8GB RAM</p>-->
+<!--				<p class="text-white card-text">Graphics:  Nvidia 500 / Nvidia 600/ AMD 6000 series</p>-->
+<!--				<p class="text-white card-text">Hard drive: 35 GB space<p>-->
+
+<!--			</div>-->
+
+<!--		</div>-->
+<!--	</div>-->
+
+<!--	<div class="col-md-4">-->
+<!--		<div class="card">-->
+<!--			<img src="../static/images/game13.jpg" height="300" alt="">-->
+<!--			<div class="card-body" style="background-color:#000033">-->
+<!--				<h3 class="card-title text-white">GTA:5</h3>-->
+<!--                <p class="card-text text-white">Prize: 750</p><p class="text-white card-text">Requirements:</p>-->
+<!--				<p class="text-white card-text">OS: windows7-64Bit or later</p>-->
+<!--				<p class="text-white card-text">processor:Quad-core Intel Core i5 or i7 processor</p>-->
+<!--				<p class="text-white card-text">Memory: 4GB RAM</p>-->
+<!--				<p class="text-white card-text">Graphics:  Nvidia 9800 GT 1GB</p>-->
+<!--				<p class="text-white card-text">Hard drive: 64 GB space<p>-->
+
+<!--			</div>-->
+
+<!--		</div>-->
+
+<!--	</div>-->
+
+<!--</section>-->
+<!--     <hr class="bg-primary" width="75%">-->
+
+<!--<section class=" row" style="background-color: #000;">-->
+<!--	<div class="col-md-4">-->
+<!--		<div class="card">-->
+<!--			<img src="../static/images/game3.jpg" height="300" alt="Euro truck simulator">-->
+<!--			<div class="card-body" style="background-color: #000;">-->
+<!--				<h3 class="card-title text-white">injustice: gods among us</h3>-->
+<!--                <p class="text-white card-text">Prize: 450</p>-->
+<!--				<p class="text-white card-text">Requirements:</p>-->
+<!--				<p class="text-white card-text">OS: windows7-32bit or later</p>-->
+<!--				<p class="text-white card-text">processor:intel core 2 duo 2.4 GHZ</p>-->
+<!--				<p class="text-white card-text">Memory: 4GB RAM</p>-->
+<!--				<p class="text-white card-text">Graphics:  Nvidia 500 / Nvidia 600/ AMD 6000 series</p>-->
+<!--				<p class="text-white card-text">Hard drive: 21 GB space<p>-->
+
+<!--			</div>-->
+
+<!--		</div>-->
+
+<!--	</div>-->
+
+<!--	<div class="col-md-4">-->
+<!--		<div class="card">-->
+<!--			<img src="../static/images/game14.jpg" height="300" alt="Forza horizon">-->
+<!--			<div class="card-body" style="background-color: #000;">-->
+<!--				<h3 class="card-title text-white">Doom: Eternal </h3>-->
+<!--                <p class="text-white card-text">Price: 550</p>-->
+<!--				<p class="text-white card-text">Requirements:</p>-->
+<!--				<p class="text-white card-text">OS: windows7-64Bit or later</p>-->
+<!--				<p class="text-white card-text">processor:intel core i5 3.3 GHZ</p>-->
+<!--				<p class="text-white card-text">Memory: 8GB RAM</p>-->
+<!--				<p class="text-white card-text">Graphics:  Nvidia geforce 1050Ti 4GB</p>-->
+<!--				<p class="text-white card-text">Hard drive: 50GB space<p>-->
+<!--			</div>-->
+
+<!--		</div>-->
+
+<!--	</div>-->
+
+<!--	<div class="col-md-4">-->
+<!--		<div class="card">-->
+<!--			<img src="../static/images/game15.jpg" height="300" alt="">-->
+<!--			<div class="card-body" style="background-color: #000;">-->
+<!--				<h3 class="card-title text-white">Mortal kombart: XL</h3>-->
+<!--                <p class="text-white card-text"> price: 450</p>-->
+<!--				<p class="text-white card-text">Requirements:</p>-->
+<!--				<p class="text-white card-text">OS: windows7-64Bit or later</p>-->
+<!--				<p class="text-white card-text">processor:Intel Core i5-750, 2.67 GHz</p>-->
+<!--				<p class="text-white card-text">Memory: 3GB RAM</p>-->
+<!--				<p class="text-white card-text">Graphics:NVIDIA GeForce GTX 460 </p>-->
+<!--				<p class="text-white card-text">Hard drive: 36 GB space<p>-->
+<!--			</div>-->
+
+<!--		</div>-->
+
+<!--	</div>-->
+<!--</section>-->
+    <hr class="bg-danger" width="75%">
+	<hr class="bg-primary" width="75%">
+
+{% include 'footer.html' %}
+</body>
+</html>
