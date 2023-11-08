@@ -17,13 +17,9 @@
             <h4 class="text-center">{{msg}}</h4>
         <div class="row container">
             <form action="/client_search_records" method="post">
-            <input type="email" name ="email" placeholder="Enter email" required> <br>
-            <input type="submit" value="Search" class="btn btn-outline-primary"style="margin-top: 5px;">
-        </form>
-
-        <form action="/client_records" method="post" style="margin-top:10px ; margin-left: 10px ;">
-            <input type="text" style="border-color: white;" hidden > <br>
-            <input type="submit" value="Display all" class="btn btn-outline-danger">
+            <input type="text" name ="search" placeholder="Enter email or name" required> <br>
+            <input type="submit" value="Search" class="btn btn-outline-primary">
+            <a href="/client_records" class="btn btn-outline-danger">Reset</a>
         </form>
         </div>
 
@@ -41,8 +37,8 @@
                 <td>{{ row[0] }}</td>
                 <td>{{ row[1] }}</td>
                 <td>{{ row[2] }}</td>
-                <td>{{ row[3] }}</td>
                 <td>{{ row[4] }}</td>
+                <td>{{ row[3] }}</td>
 
             </tr>
             {% endfor %}

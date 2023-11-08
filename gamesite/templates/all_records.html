@@ -18,21 +18,15 @@
             <h4 class="text-center">{{msg}}</h4>
             <div class="row container">
                 <form action="/order_search" method="post">
-                    <input type="text" name="order_id" placeholder="input order code or order number" size="30"> <br>
-                    <input type="submit" value="search" class="btn btn-primary" style="margin-top: 5px;">
-                </form>                
-
-
-                <form action="/all_orders" method="post" style="margin-top:10px ; margin-left: 10px ;">
-                    <input type="text" style="border-color: white;" hidden > <br>
-                    <input type="submit" value="Display all" class="btn btn-outline-danger">
+                    <input type="text" name="order_id" placeholder="input order code" size="30"> <br>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                    <a href="/all_orders"  class="btn btn-danger">Reset</a>
                 </form>
             </div>
             
            <table class="table table-striped">
                 <tr class="bg-dark text-white">
                     <td>ORDER CODE</td>
-                    <td>ORDER NUMBER</td>
                     <td>NAME</td>
                     <td>PRICE</td>
                     <td>QUANTITY</td>
@@ -46,17 +40,16 @@
 
                 <tr>
                     <td>{{ row[0] }}</td>
-                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
                     <td>{{ row[3] }}</td>
                     <td>{{ row[4] }}</td>
                     <td>{{ row[5] }}</td>
                     <td>{{ row[6] }}</td>
                     <td>{{ row[7] }}</td>
                     <td>{{ row[8] }}</td>
-                    <td>{{ row[9] }}</td>
                     <td class="row">
-                        <a href="/complete/{{row[0]}}"><span class="fa fa-check"></span> Complete</a>
-                        <a href="/cancelled/{{row[0]}}"><span class="fa fa-times"></span> Cancelled</a>
+                        <a href="/complete/{{row[0]}}" class="btn btn-success"><span class="fa fa-check "></span> Complete</a> <br>
+                        <a href="/cancelled/{{row[0]}}" class="btn btn-danger"><span class="fa fa-times"></span> Cancelled</a>
 
                     </td>
                 </tr>

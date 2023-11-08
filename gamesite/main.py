@@ -146,7 +146,7 @@ def users_login():
             cursor = conn.cursor()
             cursor.execute("select * from admins where username =%s and password=%s", (username, password))
             if cursor.rowcount == 1:
-                return render_template('admin.html', msg="login successful")
+                return redirect("/upload")
             elif cursor.rowcount == 0:
                 return render_template('users_login.html', msg="User does not exist or incorrect password")
     else:
@@ -202,7 +202,7 @@ def games():
     conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
     cursor = conn.cursor()
     # Execute the query using the cursor
-    cursor.execute("select * from games")
+    cursor.execute("select * from games where stock != '0'")
     # Check for records
     if cursor.rowcount == 0:
         return render_template('games.html', msg="Out of stock")
@@ -218,7 +218,7 @@ def tech():
     conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
     cursor = conn.cursor()
     # Execute the query using the cursor
-    cursor.execute("select * from tech")
+    cursor.execute("select * from tech where stock != '0'")
     # Check for records
     if cursor.rowcount == 0:
         return render_template('tech.html', msg="Out of stock")
@@ -282,7 +282,7 @@ def purchase_games(id):
         rows = cursor.fetchall()
         for row in rows:
             # stock represents the number of items available in the database
-            stock = row[5]
+            stock = row[4]
             return render_template('purchase_games.html', rows=rows, stock=stock)
 
 
@@ -329,13 +329,13 @@ def add(section):
             for row in rows:
                 # stock represents the number of items available
                 # qtty represents the number a user has input
-                stock = row[5]
+                stock = row[4]
                 if qtty > stock:
                     flash("You have input a quantity that is more than the ones remaining")
                     return redirect(f'/purchase_games/{id}')
                 elif qtty<= stock:
                     new_stock = stock - qtty
-                    cursor.execute("update games set quantity = %s where product_id = %s", (new_stock, id))
+                    cursor.execute("update games set stock = %s where product_id = %s", (new_stock, id))
                     conn.commit()
 
         # validate the received values
@@ -404,7 +404,7 @@ def add(section):
                     return redirect(f'/purchase_tech/{id}')
                 elif qtty <= stock:
                     new_stock = stock - qtty
-                    cursor.execute("update tech set quantity = %s where product_id = %s", (new_stock, id))
+                    cursor.execute("update tech set stock = %s where product_id = %s", (new_stock, id))
                     conn.commit()
 
         # validate the received values
@@ -487,9 +487,9 @@ def empty_cart():
                         rows = cursor.fetchall()
                         # if the cart is emptied, the quantity of each item in the item array is reverted back to its original number before it was added to cart
                         for row in rows:
-                            stock = row[5]
+                            stock = row[4]
                             new_stock = stock + int(quantity)
-                            cursor.execute("update games set quantity = %s where product_id = %s", (new_stock, id))
+                            cursor.execute("update games set stock = %s where product_id = %s", (new_stock, id))
                             conn.commit()
                     else:
                         cursor.execute("select * from tech where product_id = '{}'".format(id))
@@ -497,7 +497,7 @@ def empty_cart():
                         for row in rows:
                             stock = row[4]
                             new_stock = stock + int(quantity)
-                            cursor.execute("update tech set quantity = %s where product_id = %s", (new_stock, id))
+                            cursor.execute("update tech set stock = %s where product_id = %s", (new_stock, id))
                             conn.commit()
 
         # after all the emptying is done, the function clears the below sessions leaving the cart empty
@@ -525,9 +525,9 @@ def delete_product(code,quantity,id):
                 if cursor.rowcount == 1:
                     rows = cursor.fetchall()
                     for row in rows:
-                        stock = row[5]
+                        stock = row[4]
                         new_stock = stock + int(quantity)
-                        cursor.execute("update games set quantity = %s where product_id = %s", (new_stock, id))
+                        cursor.execute("update games set stock = %s where product_id = %s", (new_stock, id))
                         conn.commit()
                 else:
                     cursor.execute("select * from tech where product_id = '{}'".format(id))
@@ -535,7 +535,7 @@ def delete_product(code,quantity,id):
                     for row in rows:
                         stock = row[4]
                         new_stock = stock + int(quantity)
-                        cursor.execute("update tech set quantity = %s where product_id = %s", (new_stock, id))
+                        cursor.execute("update tech set stock = %s where product_id = %s", (new_stock, id))
                         conn.commit()
 
                 session['cart_item'].pop(item[0], None)
@@ -559,8 +559,6 @@ def delete_product(code,quantity,id):
 
 
 
-
-
 @app.route('/checkout', methods=['POST', 'GET'])
 def checkout( ):
     if 'username' in session:
@@ -570,9 +568,9 @@ def checkout( ):
             for key, value in session['cart_item'].items():
                 individual_quantity = 1
                 individual_total_price = session['cart_item'][key]['total_price']
-                ordercode =  session['cart_item'][key]['ordercode']
                 id = session['cart_item'][key]['product_id']
                 name =  session['cart_item'][key]['product_name']
+                ordercode = session['cart_item'][key]['ordercode']
                 user_name = session['username']
                 status = session['cart_item'][key]['status']
                 cost = session['cart_item'][key]['product_cost']
@@ -594,7 +592,7 @@ def checkout( ):
                     #     insert the records to the orders tables
                     cursor = conn.cursor()
                     cursor.execute(
-                        "insert into orders(order_code,id,name,cost,quantity,total,r_name,status) values('{}','{}','{}','{}','{}','{}','{}','{}')".format(
+                        "insert into orders(order_id,product_id,name,cost,quantity,total,user_name,status) values('{}','{}','{}','{}','{}','{}','{}','{}')".format(
                             ordercode,id, name, cost, qtty, total, user_name, status))
                     conn.commit()
             session.pop('cart_item', None)
@@ -612,7 +610,7 @@ def orders():
 
         conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
         cursor = conn.cursor()
-        cursor.execute("select * from orders where r_name = '{}'".format(session['username']))
+        cursor.execute("select * from orders where user_name = '{}'".format(session['username']))
 
         if cursor.rowcount == 0:
             return render_template('my_orders.html', msg="Your cart is empty")
@@ -622,7 +620,7 @@ def orders():
             # get total
             total_sum = 0
             for row in rows:
-                total_sum = total_sum + row[6]
+                total_sum = total_sum + row[5]
             return render_template('my_orders.html', rows=rows, total_sum=total_sum)
     else:
         return redirect('/users_login')
@@ -636,7 +634,7 @@ def remove(id,order_code,quantity):
 
             conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
             cursor = conn.cursor()
-            cursor.execute("DELETE FROM orders WHERE order_code = '{}' and r_name = '{}'".format(order_code,session['username']))
+            cursor.execute("DELETE FROM orders WHERE order_code = '{}' and user_name = '{}'".format(order_code,session['username']))
             conn.commit()
 
             cursor.execute("select * from games where product_id = '{}'".format(id))
@@ -664,7 +662,7 @@ def update(id):
         conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
         #     insert the records to the orders tables
         cursor = conn.cursor()
-        cursor.execute("UPDATE orders SET status = 'COMPLETE' WHERE order_code = '{}' ".format(id))
+        cursor.execute("UPDATE orders SET status = 'COMPLETE' WHERE order_id = '{}' ".format(id))
         conn.commit()
         return redirect('/all_orders')
 
@@ -675,7 +673,7 @@ def cancelled(id):
         conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
         #     insert the records to the orders tables
         cursor = conn.cursor()
-        cursor.execute("UPDATE orders SET status = 'CANCELLED' WHERE order_code = '{}' ".format(id))
+        cursor.execute("UPDATE orders SET status = 'CANCELLED' WHERE order_id = '{}' ".format(id))
         conn.commit()
         return redirect('/all_orders')
 
@@ -687,7 +685,7 @@ def order_search():
         conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
         #     insert the records to the products tables
         cursor = conn.cursor()
-        cursor.execute("select * from orders where order_code like'{}' OR order_number like '{}'".format(id,id))
+        cursor.execute("select * from orders where order_id like'{}'".format(id))
 
         if cursor.rowcount == 0:
             return render_template('all_records.html', msg='ORDER CODE/NUMBER DOES NOT EXIST')
@@ -773,18 +771,18 @@ def client_records():
 @app.route('/client_search_records', methods=['POST', 'GET'])
 def client_search_records():
     if request.method == 'POST':
-        email = request.form['email']
+        search = request.form['search']
         conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
         #     insert the records to the products tables
         cursor = conn.cursor()
-        cursor.execute("select * from clients where email = '{}'".format(email))
+        cursor.execute("select * from clients where email like %s or name like %s",
+                       ('%' + search + '%','%' + search + '%'))
 
         if cursor.rowcount == 0:
             return render_template('client_records.html', msg='Client does not exist')
 
         else:
             rows = cursor.fetchall()
-            print (rows)
             return render_template('client_records.html', rows=rows)
     else:
         return render_template('client_records.html')
@@ -811,7 +809,7 @@ def games_search():
         conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
         #     insert the records to the products tables
         cursor = conn.cursor()
-        cursor.execute("select * from games where name = '{}'".format(name))
+        cursor.execute("select * from games where name like %s", '%' + name + '%')
 
         if cursor.rowcount == 0:
             return render_template('games.html', msg='NO RESULTS')
@@ -830,7 +828,7 @@ def tech_search():
         conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
         #     insert the records to the products tables
         cursor = conn.cursor()
-        cursor.execute("select * from tech where name = '{}'".format(name))
+        cursor.execute("select * from tech where name like %s",'%' + name + '%')
 
         if cursor.rowcount == 0:
             return render_template('tech.html', msg='NO RESULTS')
@@ -841,185 +839,301 @@ def tech_search():
     else:
         return render_template('tech.html')
 
-@app.route('/add_games', methods=['POST', 'GET'])
-def add_games():
-    if request.method == 'POST':
-        product_id = request.form['product_id']
-        name = request.form['name']
-        requirements = request.form['requirements']
-        image = request.form['image']
-        cost = request.form['cost']
-
-        conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
-        #     insert the records to the products tables
-        cursor = conn.cursor()
-        cursor.execute("insert into games(product_id,name,requirements,image,cost) values('{}','{}','{}','{}','{}')".format(product_id, name, requirements, image, cost))
-        conn.commit()
-        return render_template('add_products.html', msg_games="Product added successfully")
-    else:
-        return render_template('add_products.html')
-
-@app.route('/add_tech', methods=['POST', 'GET'])
-def add_tech():
-    if request.method == 'POST':
-        product_id = request.form['product_id']
-        name = request.form['name']
-        image = request.form['image']
-        cost = request.form['cost']
-
-        conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
-        #     insert the records to the products tables
-        cursor = conn.cursor()
-        cursor.execute("insert into tech(product_id,name,image,cost) values('{}','{}','{}','{}')".format(product_id, name, image, cost))
-        conn.commit()
-        return render_template('add_products.html', msg_tech="Product added successfully")
-    else:
-        return render_template('add_products.html')
-
-@app.route('/tournament_application', methods=['POST', 'GET'])
-def tournament_application():
-    conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
-    cursor = conn.cursor()
-    # execute the query using the cursor
-    cursor.execute("select * from tournaments_lineup where game = 'Mortal kombat 11' order by points DESC")       
-        # check for records    
-    game1 = cursor.fetchall()
-
-    cursor.execute("select * from tournaments_lineup where game = 'Injustice 2' order by points DESC")       
-        # check for records    
-    game2 = cursor.fetchall()
-
-    cursor.execute("select * from tournaments_lineup where game = 'FIFA 21' order by points DESC")       
-        # check for records    
-    game3 = cursor.fetchall()
-
-    cursor.execute("select * from tournament_upload")
-    # check for records
-    tournaments = cursor.fetchall()
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-    if request.method == 'POST':
-        name = request.form['full_name']
-        number = request.form['phone_number']
-        email = request.form['email']
-        game = request.form['GOC']
-        conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
-        #     insert the records to the Tournaments tables
-        cursor = conn.cursor()
-        cursor.execute("insert into tournaments(name,number,email,game) values (%s,%s,%s,%s)",
-                        (name, number, email, game,))
+app.config['UPLOAD_GAMES'] = 'static/games'
+app.config['UPLOAD_TECH'] = 'static/tech'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
 
-        cursor.execute("insert into tournaments_lineup(name,number,email,game) values (%s,%s,%s,%s)",
-                        (name, number, email, game,))
-        conn.commit()
-        
-
-        return render_template('tournament_application.html', msg="Application submitted successfully", game1=game1, game2=game2, game3=game3,tournaments=tournaments)
-    
-
-    else:
-        return render_template('tournament_application.html', game1=game1, game2=game2, game3=game3, tournaments=tournaments)
-
-
-@app.route('/tournament_lineup', methods=['POST', 'GET'])
-def tournament_lineup():
-
-    # we first connect to local host and game_store database
+@app.route("/upload", methods=['POST', 'GET'])
+def upload():
+    #  connect to database
     conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
     #     insert the records to the products tables
     cursor = conn.cursor()
-    cursor.execute("select * from tournaments_lineup order by game" )
-    g1 = cursor.fetchall()
-
-    return render_template('tournaments_lineup.html', g1=g1)
-
-@app.route('/tournament_history', methods=['POST', 'GET'])
-def tournament_history():
-
-    # we first connect to local host and game_store database
-    conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
-    #     insert the records to the products tables
-    cursor = conn.cursor()
-    cursor.execute("select * from tournaments order by game" )
-    rows = cursor.fetchall()
-
-    cursor.execute("select * from tournament_upload")
-    uploads = cursor.fetchall()
-
-    return render_template('tournaments_history.html', rows=rows, uploads=uploads)
-
-@app.route('/tournament_search', methods=['POST', 'GET'])
-def tournament_search():
     if request.method == 'POST':
-        id = request.form['id_reg']
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part', "warning")
+            return redirect("/upload")
+        file = request.files['file']
+        name = request.form['name']
+        cost = request.form['cost']
+        category = request.form['category']
+        stock = request.form['stock']
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            flash('No selected file', 'warning')
+            return redirect('/upload')
+        # If all checks are passed, the app proceeds to submit the file
 
-        conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
-        #     insert the records to the products tables
-        cursor = conn.cursor()
-        cursor.execute("select * from tournaments where id like'{}' OR name like '{}' or date_time like'{}'".format(id,id,id))
+        elif file and allowed_file(file.filename):
+            if category == 'game':
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_GAMES'], filename))
 
-        if cursor.rowcount == 0:
-            return render_template('tournaments_history.html', msg='REG NUMBER/NAME/DATE DOES NOT EXIST')
+                with open("static/game_id", "r") as file:
+                    old_id = int(file.read())
+                    game_id = "G" + str(old_id)
+                sql = ("insert into games(product_id,name,image,cost,stock)"
+                       "values(%s,%s,%s,%s,%s)")
+                try:
+
+                    # send to database
+                    cursor.execute(sql, (game_id, name, filename, cost, stock))
+                    # Save to database
+                    conn.commit()
+                    old_id += 1
+                    # Save the new game id to file
+                    with open("static/game_id", "w") as file:
+                        file.write(str(old_id))
+                    flash("Uploaded Successfully", "success")
+                    return redirect('/upload')
+                    # if error occurs, display error message
+                except:
+                    flash("Upload Failed", "danger")
+                    return redirect('/upload')
+            elif category == 'tech':
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_TECH'], filename))
+                with open("static/tech_id", "r") as file:
+                    old_id = int(file.read())
+                    tech_id = "T" + str(old_id)
+                sql = ("insert into tech(product_id,name,image,cost,stock) "
+                       "values(%s,%s,%s,%s,%s)")
+                try:
+
+                    # send to database
+                    cursor.execute(sql, (tech_id, name, filename, cost, stock))
+                    # Save to database
+                    conn.commit()
+                    old_id += 1
+                    # Save the new tech id to file
+                    with open("static/tech_id", "w") as file:
+                        file.write(str(old_id))
+                    flash("Uploaded Successfully", "success")
+                    return redirect('/upload')
+                    # if error occurs, display error message
+                except Exception as e:
+                    print(e)
+                    flash("Upload Failed", "danger")
+                    return redirect('/upload')
+        # If file is not on allowed list, display error message
         else:
-            rows = cursor.fetchall()
-            return render_template('tournaments_history.html', rows=rows)
-
-
+            flash("Uploaded File Not Allowed", "warning")
+            return redirect('/upload')
     else:
-        return render_template('tournaments_history.html')
+        cursor.execute("select * from games")
+        games = cursor.fetchall()
+        cursor.execute("select * from tech")
+        tech = cursor.fetchall()
+        return render_template('upload.html', games=games, tech=tech)
+
+@app.route('/product_search', methods=['POST', 'GET'])
+def product_search():
+    if request.method == 'POST':
+        search_term = request.form['search_term']
+
+        conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
+        #     insert the records to the products tables
+        cursor = conn.cursor()
+        cursor.execute("select * from games where product_id = %s or name like %s ",
+                       (search_term, '%' + search_term + '%'))
+        if cursor.rowcount > 0:
+            games = cursor.fetchall()
+            cursor.execute("select * from tech")
+            tech = cursor.fetchall()
+            return render_template('upload.html', games=games, tech=tech)
+        elif cursor.rowcount == 0:
+            cursor.execute("select * from tech where product_id = %s or name like %s ",
+                           (search_term, '%' + search_term + '%'))
+            if cursor.rowcount > 0:
+                tech = cursor.fetchall()
+                cursor.execute("select * from games")
+                games = cursor.fetchall()
+                return render_template('upload.html', games=games, tech=tech)
+            elif cursor.rowcount == 0:
+                flash("There is no record available with the specified search term, try again", "info")
+                return redirect("/upload")
+    else:
+        return redirect("/upload")
+
+@app.route('/product_update', methods=['POST', 'GET'])
+def product_update():
+    if request.method == 'POST':
+        product_id = request.form['product_id']
+        name = request.form['name']
+        image = request.form['image']
+        cost = request.form['cost']
+        stock = request.form['stock']
+
+        conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
+        #     insert the records to the products tables
+        cursor = conn.cursor()
+        cursor.execute("select * from games where product_id = %s", product_id)
+        if cursor.rowcount == 1:
+            cursor.execute("update games set name = %s, image = %s, cost = %s, stock = %s where product_id = %s",
+                           (name, image, cost, stock, product_id))
+            conn.commit()
+            flash("Product updated successfully", "success")
+            return redirect("upload")
+        else:
+            cursor.execute("update tech set name = %s, image = %s, cost = %s, stock = %s where product_id = %s",
+                           (name, image, cost, stock, product_id))
+            conn.commit()
+            flash("Product updated successfully", "success")
+            return redirect("upload")
+    else:
+        return redirect("/upload")
+#
+# @app.route('/tournament_application', methods=['POST', 'GET'])
+# def tournament_application():
+#     conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
+#     cursor = conn.cursor()
+#     # execute the query using the cursor
+#     cursor.execute("select * from tournaments_lineup where game = 'Mortal kombat 11' order by points DESC")
+#         # check for records
+#     game1 = cursor.fetchall()
+#
+#     cursor.execute("select * from tournaments_lineup where game = 'Injustice 2' order by points DESC")
+#         # check for records
+#     game2 = cursor.fetchall()
+#
+#     cursor.execute("select * from tournaments_lineup where game = 'FIFA 21' order by points DESC")
+#         # check for records
+#     game3 = cursor.fetchall()
+#
+#     cursor.execute("select * from tournament_upload")
+#     # check for records
+#     tournaments = cursor.fetchall()
+#
+#
+#     if request.method == 'POST':
+#         name = request.form['full_name']
+#         number = request.form['phone_number']
+#         email = request.form['email']
+#         game = request.form['GOC']
+#         conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
+#         #     insert the records to the Tournaments tables
+#         cursor = conn.cursor()
+#         cursor.execute("insert into tournaments(name,number,email,game) values (%s,%s,%s,%s)",
+#                         (name, number, email, game,))
+#
+#         cursor.execute("insert into tournaments_lineup(name,number,email,game) values (%s,%s,%s,%s)",
+#                         (name, number, email, game,))
+#         conn.commit()
+#
+#
+#         return render_template('tournament_application.html', msg="Application submitted successfully", game1=game1, game2=game2, game3=game3,tournaments=tournaments)
+#
+#
+#     else:
+#         return render_template('tournament_application.html', game1=game1, game2=game2, game3=game3, tournaments=tournaments)
+#
+#
+# @app.route('/tournament_lineup', methods=['POST', 'GET'])
+# def tournament_lineup():
+#
+#     # we first connect to local host and game_store database
+#     conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
+#     #     insert the records to the products tables
+#     cursor = conn.cursor()
+#     cursor.execute("select * from tournaments_lineup order by game" )
+#     g1 = cursor.fetchall()
+#
+#     return render_template('tournaments_lineup.html', g1=g1)
+#
+# @app.route('/tournament_history', methods=['POST', 'GET'])
+# def tournament_history():
+#
+#     # we first connect to local host and game_store database
+#     conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
+#     #     insert the records to the products tables
+#     cursor = conn.cursor()
+#     cursor.execute("select * from tournaments order by game" )
+#     rows = cursor.fetchall()
+#
+#     cursor.execute("select * from tournament_upload")
+#     uploads = cursor.fetchall()
+#
+#     return render_template('tournaments_history.html', rows=rows, uploads=uploads)
+#
+# @app.route('/tournament_search', methods=['POST', 'GET'])
+# def tournament_search():
+#     if request.method == 'POST':
+#         id = request.form['id_reg']
+#
+#         conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
+#         #     insert the records to the products tables
+#         cursor = conn.cursor()
+#         cursor.execute("select * from tournaments where id like'{}' OR name like '{}' or date_time like'{}'".format(id,id,id))
+#
+#         if cursor.rowcount == 0:
+#             return render_template('tournaments_history.html', msg='REG NUMBER/NAME/DATE DOES NOT EXIST')
+#         else:
+#             rows = cursor.fetchall()
+#             return render_template('tournaments_history.html', rows=rows)
+#
+#
+#     else:
+#         return render_template('tournaments_history.html')
 
 from uuid import uuid4
 def make_unique(string):
     ident = uuid4().__str__()[:8]
     return f"{ident}-{string}"
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+# def allowed_file(filename):
+#     return '.' in filename and \
+#            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-UPLOAD_FOLDER = 'static/tournaments_uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
+# UPLOAD_FOLDER = 'static/tournaments_uploads'
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+# app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
 
-@app.route('/tournament_upload', methods=['GET', 'POST'])
-def upload_file():
-    # if check_admin():
-        if request.method == 'POST':
-            # check if the post request has the file part
-            if 'file' not in request.files:
-                flash('No file part',"warning")
-                return redirect("/add_games")
-            file = request.files['file']
-            # If the user does not select a file, the browser submits an
-            # empty file without a filename.
-            if file.filename == '':
-                flash('No selected file','warning')
-                return redirect('/add_games')
-            elif file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                unique_filename = make_unique(filename)
-                print('here')
-                tournament_name = request.form['tournament_name']
-                tournament_date = request.form['tournament_date']
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], unique_filename))
-                sql  = "insert into tournament_upload(name, pic, date) values(%s, %s, %s)"
-                try:
-                    connection = pymysql.connect(host='localhost', user='root', password='',database='game_store')
-                    cursor = connection.cursor()
-                    cursor.execute(sql, (tournament_name,unique_filename, tournament_date ))
-                    connection.commit()
-                    flash("Uploaded Successfully","success")
-                    return redirect('/add_games')
-                except:
-                    flash("Upload Failed", "danger")
-                    return redirect('/add_games')
-
-            else:
-                flash("Uploaded File Not Allowed", "warning")
-                return redirect('/add_games')
-        else:
-            return redirect('/add_games')
+# @app.route('/tournament_upload', methods=['GET', 'POST'])
+# def upload_file():
+#     # if check_admin():
+#         if request.method == 'POST':
+#             # check if the post request has the file part
+#             if 'file' not in request.files:
+#                 flash('No file part',"warning")
+#                 return redirect("/add_games")
+#             file = request.files['file']
+#             # If the user does not select a file, the browser submits an
+#             # empty file without a filename.
+#             if file.filename == '':
+#                 flash('No selected file','warning')
+#                 return redirect('/add_games')
+#             elif file and allowed_file(file.filename):
+#                 filename = secure_filename(file.filename)
+#                 unique_filename = make_unique(filename)
+#                 tournament_name = request.form['tournament_name']
+#                 tournament_date = request.form['tournament_date']
+#                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], unique_filename))
+#                 sql  = "insert into tournament_upload(name, pic, date) values(%s, %s, %s)"
+#                 try:
+#                     connection = pymysql.connect(host='localhost', user='root', password='',database='game_store')
+#                     cursor = connection.cursor()
+#                     cursor.execute(sql, (tournament_name,unique_filename, tournament_date ))
+#                     connection.commit()
+#                     flash("Uploaded Successfully","success")
+#                     return redirect('/add_games')
+#                 except:
+#                     flash("Upload Failed", "danger")
+#                     return redirect('/add_games')
+#
+#             else:
+#                 flash("Uploaded File Not Allowed", "warning")
+#                 return redirect('/add_games')
+#         else:
+#             return redirect('/add_games')
 
 @app.route('/delete/<id>', methods=['POST', 'GET'])
 def delete(id):

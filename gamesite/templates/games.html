@@ -41,11 +41,10 @@
 	{% for row in rows %}
 	<div class="col-md-4">
 		<div class="card">
-			<a href="/purchase_games/{{row[0]}}"><img src="{{row[3]}}" height="300" width="100%" alt=""></a>
+			<a href="/purchase_games/{{row[0]}}"><img src="static/games/{{row[2]}}" height="300" width="100%" alt=""></a>
 				<div class="card-body" style="background-color: #000;">
 				<h3><b class="card-title text-white" >{{ row[1]}}</b></h3> <br>
-				<b><p class="text-white"> KSH: {{ row[4] }}</p></b>
-				<p class="text-white">{{ row[2] }}</p><br>
+				<b><p class="text-white"> KSH: {{ row[3] }}</p></b>
 				<a href="/purchase_games/{{row[0]}}" class="btn btn-outline-danger">ORDER</a>
 			</div>
 		</div>
@@ -154,7 +153,7 @@
 
 <!--	<div class="col-md-4">-->
 <!--		<div class="card">-->
-<!--			<img src="../static/images/game15.jpg" height="300" alt="">-->
+<!--			<img src="../static/images/game6.jpg" height="300" alt="">-->
 <!--			<div class="card-body" style="background-color: #000;">-->
 <!--				<h3 class="card-title text-white">Mortal kombart: XL</h3>-->
 <!--                <p class="text-white card-text"> price: 450</p>-->

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Upload products</title>
+    <link rel="stylesheet" href="../static/css/bootstrap.css">
+
+	<!-- we will need jquery file later -->
+	<script type="text/javascript" src="../static/js/jquery.js"></script>
+
+	<!-- below is a javascript file,,helps in interactivity -->
+	<!-- jQuery and JS bundle w/ Popper.js -  Interactivity-->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+	<script src='https://kit.fontawesome.com/a076d05399.js'></script>
+</head>
+<body>
+{% include 'navbar_admin.html' %}
+<div class="container">
+    <b>{% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{category}}" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </b> <br>
+</div>
+
+<section >
+        <form action="/upload" enctype="multipart/form-data" method="post" class="container">
+            <fieldset class="form-group border p-3">
+                <div class="row">
+                    <div class="col-md-3">
+<!--                        <label>Pick the image from below</label><br>-->
+                        <input type="file" name="file">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" name="name" placeholder="Enter product name" required class="form-control">
+
+                    </div>
+                    <div class="col-md-3">
+                        <input type="number" name="cost" placeholder="Enter cost" required class="form-control">
+                        <br>
+                    </div>
+                    <div>
+                        <input type="number" name="stock" required placeholder="Enter stock" class="form-control">
+                    </div>
+                    <div class="col-md-3">
+                        <select name="category" id="mySelect" class="form-control">
+                            <option value="">Select category</option>
+                            <option value="game">Game</option>
+                            <option value="tech">Tech</option>
+                        </select> <br>
+                    </div>
+                    <div class="pl-2">
+                        <input type="submit" value="Add product" class="btn btn-outline-primary">
+                    </div>
+                </div>
+            </fieldset>
+
+        </form>
+</section>
+
+<section class="row ">
+    <div class="col-md-6 pl-5">
+        <form action="/product_search", method="post">
+            <input type="text" name="search_term" placeholder="Input ID or name">
+            <button class="btn btn-outline-primary">Search</button>
+        </form>
+        <table class="table table-striped">
+            <tr>
+                <th>Product id</th>
+                <th>Product name</th>
+                <th>Image</th>
+                <th>Cost</th>
+                <th>In stock</th>
+                <th>Action</th>
+            </tr>
+            {% for row in games%}
+            <tr>
+                <form action="/product_update", method="post">
+                    <td><input type="hidden" name="product_id" value="{{row [0]}}">{{row [0]}}</td>
+                    <td><input type="text" value="{{row [1]}}" name="name" class="form-control"></td>
+                    <td><input type="text" value="{{row [2]}}" name="image" class="form-control"></td>
+                    <td><input type="number" value="{{row [3]}}" name="cost" class="form-control"></td>
+                    <td><input type="number" value="{{row [4]}}" name="stock" class="form-control"></td>
+                    <td>
+                        <button class="btn btn-success">Update</button>
+                    </td>
+                </form>
+            </tr>
+            {%endfor%}
+        </table>
+    </div>
+
+     <div class="col-md-6">
+         <form action="/product_search", method="post">
+            <input type="text" name="search_term" placeholder="Input ID or name">
+            <button class="btn btn-outline-primary">Search</button>
+        </form>
+        <table class="table table-striped">
+            <tr>
+                <th>Product id</th>
+                <th>Product name</th>
+                <th>Image</th>
+                <th>Cost</th>
+                <th>In stock</th>
+                <th>Action</th>
+            </tr>
+            {% for row in tech%}
+            <tr>
+                <form action="/product_update", method="post">
+                    <td><input type="hidden" value="{{row [0]}}" name="product_id">{{row [0]}}</td>
+                    <td><input type="text" value="{{row [1]}}" name="name" class="form-control"></td>
+                    <td><input type="text" value="{{row [2]}}" name="image" class="form-control"></td>
+                    <td><input type="number" value="{{row [3]}}" name="cost" class="form-control"></td>
+                    <td><input type="number" value="{{row [4]}}" name="stock" class="form-control"></td>
+                    <td>
+                        <button class="btn btn-success">Update</button>
+                    </td>
+                </form>
+            </tr>
+            {%endfor%}
+        </table>
+    </div>
+
+</section>
+{% include 'footer.html' %}
+</body>
+</html>

@@ -34,12 +34,12 @@
 	<div class="col-md-4">
 		<div class="card">
 <!--			image-->
-			<a href="/purchase_tech/{{row[0]}}"><img src="{{row[3]}}" height="300" width="100%" alt=""></a>
+			<a href="/purchase_tech/{{row[0]}}"><img src="static/tech/{{row[2]}}" height="300" width="100%" alt=""></a>
 			<div class="card-body" style="background-color:#000033">
 <!--				name of product-->
 				<h3><b class="card-title text-white" >{{ row[1] }}</b></h3> <br>
 <!--				cost-->
-				<p class="text-white"> KSH: {{ row[2] }}</p><br>
+				<p class="text-white"> KSH: {{ row[3] }}</p><br>
 <!--				order button-->
 				<a href="/purchase_tech/{{row[0]}}" class="btn btn-outline-primary">ORDER</a>
 			</div>
