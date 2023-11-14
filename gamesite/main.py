@@ -1253,9 +1253,9 @@ def logout():
                     if cursor.rowcount == 1:
                         rows = cursor.fetchall()
                         for row in rows:
-                            stock = row[5]
+                            stock = row[4]
                             new_stock = stock + int(quantity)
-                            cursor.execute("update games set quantity = %s where product_id = %s", (new_stock, id))
+                            cursor.execute("update games set stock = %s where product_id = %s", (new_stock, id))
                             conn.commit()
                     else:
                         cursor.execute("select * from tech where product_id = '{}'".format(id))
@@ -1263,7 +1263,7 @@ def logout():
                         for row in rows:
                             stock = row[4]
                             new_stock = stock + int(quantity)
-                            cursor.execute("update tech set quantity = %s where product_id = %s", (new_stock, id))
+                            cursor.execute("update tech set stock = %s where product_id = %s", (new_stock, id))
                             conn.commit()
         # after the cart is emptied all the below sessions are cleared and the user is logged out
         session.pop('username',None)
