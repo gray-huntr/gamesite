@@ -2,7 +2,7 @@
 # import app as app
 import os
 
-import app as app
+# import app as app
 from flask import *
 import pymysql
 from uuid import uuid4
@@ -13,7 +13,6 @@ app.secret_key = "Wdg@#$%89jMfh2879mT"
 
 app = Flask(__name__)
 from flask import request
-import redirect
 
 # Route for the home page
 @app.route('/home')
