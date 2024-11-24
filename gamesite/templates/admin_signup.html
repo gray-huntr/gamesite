@@ -7,10 +7,9 @@
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
-
-
+<link rel="stylesheet" href="{{ url_for('static', filename="css/styles.css") }}">
 </head>
-<body>
+<body style="background: linear-gradient(45deg, #d9534f, #0275d8);">
 {% include 'navbar_admin.html' %}
 <section class="row">
     <div class="col-md-12">
@@ -20,10 +19,11 @@
 </section>
 
 <section class="">
-    <div class="col-md-12 text-center">
+    <div class="col-md-12 text-center mb-4">
         {{msg}}
         <form action="/admin_signup" method="post">
-            <input type="text" name="username"  placeholder="Enter username" class=" text-center" required>
+            <fieldset class="border p-2 col-md-3 container">
+                <input type="text" name="username"  placeholder="Enter username" class=" text-center" required>
             <br> <br>
              <input type="text" name="name"  placeholder="Enter name" class=" text-center" required>
             <br> <br>
@@ -35,8 +35,9 @@
             <br> <br>
             <input type="password" name="repeat_pass" placeholder="Repeat password" class="text-center" required>
             <br> <br>
-            <input type="submit" class="btn btn-outline-success" value="REGISTER">
+            <input type="submit" class="btn btn-success" value="REGISTER">
             <br><br>
+            </fieldset>
         </form>
     </div>
 

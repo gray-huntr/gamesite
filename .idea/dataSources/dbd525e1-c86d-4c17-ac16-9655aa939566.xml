@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="mrkt_kick@localhost">
-  <database-model serializer="dbm" dbms="MARIADB" family-id="MARIADB" format-version="4.49">
+  <database-model serializer="dbm" dbms="MARIADB" family-id="MARIADB" format-version="4.52">
     <root id="1"/>
     <collation id="2" parent="1" name="big5_chinese_ci">
       <Charset>big5</Charset>
@@ -1016,8 +1016,7 @@
     </schema>
     <schema id="326" parent="1" name="mrkt_kick">
       <Current>1</Current>
-      <IntrospectionTimestamp>2023-09-29.17:03:53</IntrospectionTimestamp>
-      <LocalIntrospectionTimestamp>2023-09-29.11:03:53</LocalIntrospectionTimestamp>
+      <LastIntrospectionLocalTimestamp>2023-09-29.11:03:53</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_general_ci</CollationName>
     </schema>
     <schema id="327" parent="1" name="mysql">

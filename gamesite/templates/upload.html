@@ -15,8 +15,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 
 	<script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename="css/styles.css") }}">
 </head>
-<body>
+<body style="background: linear-gradient(45deg, #d9534f, #0275d8);">
 {% include 'navbar_admin.html' %}
 <div class="container">
     <b>{% with messages = get_flashed_messages(with_categories=true) %}
@@ -58,7 +59,7 @@
                         </select> <br>
                     </div>
                     <div class="pl-2">
-                        <input type="submit" value="Add product" class="btn btn-outline-primary">
+                        <input type="submit" value="Add product" class="btn btn-primary">
                     </div>
                 </div>
             </fieldset>
@@ -70,10 +71,10 @@
     <div class="col-md-6 pl-5">
         <form action="/product_search", method="post">
             <input type="text" name="search_term" placeholder="Input ID or name">
-            <button class="btn btn-outline-primary">Search</button>
+            <button class="btn btn-primary">Search</button>
         </form>
         <table class="table table-striped">
-            <tr>
+            <tr class="bg-dark text-white">
                 <th>Product id</th>
                 <th>Product name</th>
                 <th>Image</th>
@@ -82,7 +83,7 @@
                 <th>Action</th>
             </tr>
             {% for row in games%}
-            <tr>
+            <tr class="text-white">
                 <form action="/product_update", method="post">
                     <td><input type="hidden" name="product_id" value="{{row [0]}}">{{row [0]}}</td>
                     <td><input type="text" value="{{row [1]}}" name="name" class="form-control"></td>
@@ -101,10 +102,10 @@
      <div class="col-md-6">
          <form action="/product_search", method="post">
             <input type="text" name="search_term" placeholder="Input ID or name">
-            <button class="btn btn-outline-primary">Search</button>
+            <button class="btn btn-primary">Search</button>
         </form>
         <table class="table table-striped">
-            <tr>
+            <tr class="bg-dark text-white">
                 <th>Product id</th>
                 <th>Product name</th>
                 <th>Image</th>
@@ -113,7 +114,7 @@
                 <th>Action</th>
             </tr>
             {% for row in tech%}
-            <tr>
+            <tr class="text-white">
                 <form action="/product_update", method="post">
                     <td><input type="hidden" value="{{row [0]}}" name="product_id">{{row [0]}}</td>
                     <td><input type="text" value="{{row [1]}}" name="name" class="form-control"></td>

@@ -12,12 +12,11 @@ from werkzeug.utils import secure_filename
 app.secret_key = "Wdg@#$%89jMfh2879mT"
 
 app = Flask(__name__)
-from flask import request
 
 # Route for the home page
 @app.route('/home')
 def home():
-    return render_template('home.html')
+    return render_template('home.v2.html')
 # route for the index page (Signup)
 @app.route('/', methods=['POST','GET'])
 def sign_up():
@@ -56,7 +55,7 @@ def sign_up():
             else:
                 return render_template('sign_up.html', msg="Error")
     else:
-        return render_template('sign_up.html')
+        return render_template('sign_up.v2.html')
 
 # Route for the tournaments page (admin side)
 @app.route('/tournaments')
@@ -609,7 +608,7 @@ def orders():
 
         conn = pymysql.connect(host="localhost", user="root", password="", database="game_store")
         cursor = conn.cursor()
-        cursor.execute("select * from orders where user_name = '{}'".format(session['username']))
+        cursor.execute("select * from orders where user_name = '{}' order by date desc".format(session['username']))
 
         if cursor.rowcount == 0:
             return render_template('my_orders.html', msg="Your cart is empty")
@@ -845,7 +844,7 @@ def allowed_file(filename):
 
 app.config['UPLOAD_GAMES'] = 'static/games'
 app.config['UPLOAD_TECH'] = 'static/tech'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp'}
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
 
 @app.route("/upload", methods=['POST', 'GET'])

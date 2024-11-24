@@ -11,8 +11,9 @@
 	<!-- below is a javascript file,,helps in interactivity -->
 	<script type="text/javascript" src="../static/js/bootstrap.js"></script>
 	<script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename="css/styles.css") }}">
 </head>
-<body style="background-color:#000;">
+<body style="background: linear-gradient(45deg, #d9534f, #0275d8);">
 {% include 'navbar.html' %}
 <section class="row">
 	<div class="col-md-10">
@@ -29,13 +30,14 @@
 	</div>
 </section>
 
-<section class="row" style="background-color:#000033">
+<section class="row" >
 	{% for row in rows %}
-	<div class="col-md-4">
-		<div class="card">
+	<div class="col-md-4 mb-4" style="overflow: hidden; border-radius: 4%">
+		<div class="">
 <!--			image-->
 			<a href="/purchase_tech/{{row[0]}}"><img src="static/tech/{{row[2]}}" height="300" width="100%" alt=""></a>
-			<div class="card-body" style="background-color:#000033">
+			<div class="mt-auto shadow-lg w-100 text-light text-center p-2" style="background: rgba(0, 0, 0, 0.1);
+                backdrop-filter: blur(5px);">
 <!--				name of product-->
 				<h3><b class="card-title text-white" >{{ row[1] }}</b></h3> <br>
 <!--				cost-->
